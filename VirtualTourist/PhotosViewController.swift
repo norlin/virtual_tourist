@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  PhotosViewController.swift
 //  VirtualTourist
 //
 //  Created by norlin on 06/01/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class PhotosViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,4 +22,3 @@ class ViewController: UIViewController {
 
 
 }
-
