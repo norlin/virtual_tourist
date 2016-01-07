@@ -20,10 +20,26 @@
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="rxC-MY-HPO">
                                 <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Gy1-bP-sso"/>
+                                </connections>
                             </mapView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap pin to delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RuQ-cV-me0">
+                                <rect key="frame" x="0.0" y="526" width="320" height="42"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="0.49571659482758623" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="42" id="r3b-9m-2GI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="RuQ-cV-me0" secondAttribute="bottom" id="GVu-Gh-T7L"/>
+                            <constraint firstItem="RuQ-cV-me0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Hcq-7D-IPJ"/>
+                            <constraint firstAttribute="trailing" secondItem="RuQ-cV-me0" secondAttribute="trailing" id="ILc-HP-trF"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="rxC-MY-HPO" secondAttribute="bottom" id="b31-zF-pfg"/>
                             <constraint firstAttribute="trailing" secondItem="rxC-MY-HPO" secondAttribute="trailing" id="eUh-pX-biT"/>
                             <constraint firstItem="rxC-MY-HPO" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="vn0-0d-mjZ"/>
@@ -31,15 +47,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Places" id="F8p-FF-FiS">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="3He-Ph-UhF">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="DgY-in-41U">
                             <connections>
-                                <segue destination="d3T-w0-uiA" kind="show" id="Ygb-if-yf3"/>
+                                <action selector="editPins:" destination="BYZ-38-t0r" id="xy6-9n-u3B"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="DgY-in-41U"/>
                     </navigationItem>
                     <connections>
-                        <segue destination="d3T-w0-uiA" kind="show" id="yPa-Jz-snJ"/>
+                        <outlet property="editButton" destination="DgY-in-41U" id="mDe-H5-dpT"/>
+                        <outlet property="editHint" destination="RuQ-cV-me0" id="FYM-qS-Kvp"/>
+                        <outlet property="map" destination="rxC-MY-HPO" id="KNu-lm-XBw"/>
+                        <segue destination="d3T-w0-uiA" kind="show" identifier="pinDetails" id="yPa-Jz-snJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -79,7 +97,7 @@
                                 </cells>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No photos found for this pin." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d34-UX-hXZ">
-                                <rect key="frame" x="51" y="359" width="219" height="21"/>
+                                <rect key="frame" x="51" y="274" width="219" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -111,7 +129,7 @@
                             <constraint firstItem="Ohh-wQ-BzP" firstAttribute="leading" secondItem="Nlo-lA-yFU" secondAttribute="leading" id="L2U-cV-EvZ"/>
                             <constraint firstAttribute="trailing" secondItem="1ru-Wa-9zo" secondAttribute="trailing" id="Oge-4r-htV"/>
                             <constraint firstItem="s0a-Jk-dPu" firstAttribute="leading" secondItem="1ru-Wa-9zo" secondAttribute="leading" constant="5" id="T9F-LW-D9j"/>
-                            <constraint firstItem="d34-UX-hXZ" firstAttribute="centerY" secondItem="Nlo-lA-yFU" secondAttribute="centerY" multiplier="1.3" id="VFL-ws-ytg"/>
+                            <constraint firstItem="d34-UX-hXZ" firstAttribute="centerY" secondItem="Nlo-lA-yFU" secondAttribute="centerY" id="VFL-ws-ytg"/>
                             <constraint firstItem="1ru-Wa-9zo" firstAttribute="leading" secondItem="Nlo-lA-yFU" secondAttribute="leading" id="cie-ly-ujs"/>
                             <constraint firstAttribute="trailing" secondItem="Ohh-wQ-BzP" secondAttribute="trailing" id="qGO-42-AMy"/>
                             <constraint firstItem="ERV-tG-hzz" firstAttribute="top" secondItem="Ohh-wQ-BzP" secondAttribute="bottom" id="rgV-kv-mC8"/>
@@ -149,7 +167,4 @@
             <point key="canvasLocation" x="-397" y="444"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="Ygb-if-yf3"/>
-    </inferredMetricsTieBreakers>
 </document>
