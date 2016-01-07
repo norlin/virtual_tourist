@@ -6,10 +6,10 @@
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
-        <!--Map View Controller-->
+        <!--Places-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MapViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Places" id="BYZ-38-t0r" customClass="MapViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -30,7 +30,14 @@
                             <constraint firstItem="rxC-MY-HPO" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="xK8-oD-7WD"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="F8p-FF-FiS"/>
+                    <navigationItem key="navigationItem" title="Places" id="F8p-FF-FiS">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="3He-Ph-UhF">
+                            <connections>
+                                <segue destination="d3T-w0-uiA" kind="show" id="Ygb-if-yf3"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="DgY-in-41U"/>
+                    </navigationItem>
                     <connections>
                         <segue destination="d3T-w0-uiA" kind="show" id="yPa-Jz-snJ"/>
                     </connections>
@@ -42,7 +49,7 @@
         <!--Photos View Controller-->
         <scene sceneID="ttg-Yg-NA3">
             <objects>
-                <viewController id="d3T-w0-uiA" customClass="PhotosViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Photos" id="d3T-w0-uiA" userLabel="Photos View Controller" customClass="PhotosViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="VnM-Qc-1i5"/>
                         <viewControllerLayoutGuide type="bottom" id="ERV-tG-hzz"/>
@@ -51,22 +58,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="1ru-Wa-9zo">
-                                <rect key="frame" x="0.0" y="64" width="320" height="170"/>
-                                <color key="backgroundColor" red="0.97105437517166138" green="0.97102522850036621" blue="0.97104179859161377" alpha="1" colorSpace="calibratedRGB"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
-                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES"/>
-                            </textView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No photos found for this pin." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d34-UX-hXZ">
-                                <rect key="frame" x="51" y="359" width="219" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Ohh-wQ-BzP">
-                                <rect key="frame" x="0.0" y="242" width="320" height="326"/>
+                                <rect key="frame" x="0.0" y="186" width="320" height="382"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Aqi-pr-iyJ">
                                     <size key="itemSize" width="100" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -75,7 +68,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="8bv-3f-DtY">
-                                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                        <rect key="frame" x="0.0" y="64" width="100" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
@@ -85,21 +78,54 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No photos found for this pin." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d34-UX-hXZ">
+                                <rect key="frame" x="51" y="359" width="219" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add your notes here..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s0a-Jk-dPu">
+                                <rect key="frame" x="5" y="69" width="320" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="MGA-8I-Fv7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.42467421293258667" green="0.42466151714324951" blue="0.42466866970062256" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ru-Wa-9zo">
+                                <rect key="frame" x="0.0" y="64" width="320" height="114"/>
+                                <color key="backgroundColor" red="0.97105437517166138" green="0.97102522850036621" blue="0.97104179859161377" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="d3T-w0-uiA" id="JWU-xe-Dil"/>
+                                </connections>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="s0a-Jk-dPu" firstAttribute="top" secondItem="1ru-Wa-9zo" secondAttribute="top" constant="5" id="6no-76-9vC"/>
                             <constraint firstItem="Ohh-wQ-BzP" firstAttribute="top" secondItem="1ru-Wa-9zo" secondAttribute="bottom" constant="8" id="Eyq-oC-FaX"/>
                             <constraint firstItem="Ohh-wQ-BzP" firstAttribute="leading" secondItem="Nlo-lA-yFU" secondAttribute="leading" id="L2U-cV-EvZ"/>
                             <constraint firstAttribute="trailing" secondItem="1ru-Wa-9zo" secondAttribute="trailing" id="Oge-4r-htV"/>
+                            <constraint firstItem="s0a-Jk-dPu" firstAttribute="leading" secondItem="1ru-Wa-9zo" secondAttribute="leading" constant="5" id="T9F-LW-D9j"/>
                             <constraint firstItem="d34-UX-hXZ" firstAttribute="centerY" secondItem="Nlo-lA-yFU" secondAttribute="centerY" multiplier="1.3" id="VFL-ws-ytg"/>
                             <constraint firstItem="1ru-Wa-9zo" firstAttribute="leading" secondItem="Nlo-lA-yFU" secondAttribute="leading" id="cie-ly-ujs"/>
                             <constraint firstAttribute="trailing" secondItem="Ohh-wQ-BzP" secondAttribute="trailing" id="qGO-42-AMy"/>
                             <constraint firstItem="ERV-tG-hzz" firstAttribute="top" secondItem="Ohh-wQ-BzP" secondAttribute="bottom" id="rgV-kv-mC8"/>
+                            <constraint firstItem="s0a-Jk-dPu" firstAttribute="width" secondItem="1ru-Wa-9zo" secondAttribute="width" id="ryw-Ot-oRY"/>
                             <constraint firstItem="d34-UX-hXZ" firstAttribute="centerX" secondItem="Nlo-lA-yFU" secondAttribute="centerX" id="ta1-KL-TWO"/>
                             <constraint firstItem="1ru-Wa-9zo" firstAttribute="top" secondItem="VnM-Qc-1i5" secondAttribute="bottom" id="yvw-a6-SGa"/>
-                            <constraint firstItem="1ru-Wa-9zo" firstAttribute="height" secondItem="Nlo-lA-yFU" secondAttribute="height" multiplier="0.3" id="zN0-QU-ZjI"/>
+                            <constraint firstItem="1ru-Wa-9zo" firstAttribute="height" secondItem="Nlo-lA-yFU" secondAttribute="height" multiplier="0.2" id="zN0-QU-ZjI"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="notes" destination="1ru-Wa-9zo" id="fiV-2e-1k6"/>
+                        <outlet property="placeholder" destination="s0a-Jk-dPu" id="bFE-5h-Ajj"/>
+                        <outlet property="view" destination="Nlo-lA-yFU" id="iAh-lP-FES"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XWV-YP-oJK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -123,4 +149,7 @@
             <point key="canvasLocation" x="-397" y="444"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Ygb-if-yf3"/>
+    </inferredMetricsTieBreakers>
 </document>

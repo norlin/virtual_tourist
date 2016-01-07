@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		976CBCB41C3EC94400FEA22D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976CBCB31C3EC94400FEA22D /* MapKit.framework */; };
 		97B75B381C3D39D900033CA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B75B371C3D39D900033CA4 /* AppDelegate.swift */; };
 		97B75B3A1C3D39D900033CA4 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B75B391C3D39D900033CA4 /* MapViewController.swift */; };
 		97B75B3D1C3D39D900033CA4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B75B3B1C3D39D900033CA4 /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		976CBCB31C3EC94400FEA22D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		97B75B341C3D39D900033CA4 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B75B371C3D39D900033CA4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		97B75B391C3D39D900033CA4 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -33,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				976CBCB41C3EC94400FEA22D /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +45,7 @@
 		97B75B2B1C3D39D900033CA4 = {
 			isa = PBXGroup;
 			children = (
+				976CBCB31C3EC94400FEA22D /* MapKit.framework */,
 				97B75B361C3D39D900033CA4 /* VirtualTourist */,
 				97B75B351C3D39D900033CA4 /* Products */,
 			);
@@ -294,6 +298,7 @@
 				97B75B4B1C3D39D900033CA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

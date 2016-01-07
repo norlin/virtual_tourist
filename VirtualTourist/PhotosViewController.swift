@@ -8,11 +8,22 @@
 
 import UIKit
 
-class PhotosViewController: UIViewController {
+class PhotosViewController: UIViewController, UITextViewDelegate {
 
+    @IBOutlet weak var placeholder: UILabel!
+    @IBOutlet weak var notes: UITextView!
+    
+    var cancelButton: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        notes.delegate = self
+        
+        cancelButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "cancelEditing:")
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        view.bringSubviewToFront(placeholder)
     }
 
     override func didReceiveMemoryWarning() {
@@ -20,5 +31,22 @@ class PhotosViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    func textViewDidEndEditing(textView: UITextView) {
+        placeholder.hidden = textView.hasText()
+    }
+    
+    func textViewDidChange(textView: UITextView) {
+        placeholder.hidden = textView.hasText()
+    }
+    
+    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        navigationItem.rightBarButtonItem = cancelButton
+        return true
+    }
+    
+    func cancelEditing(textField: UITextField) {
+        navigationItem.rightBarButtonItem = nil
+        view.endEditing(true)
+    }
+    
 }
