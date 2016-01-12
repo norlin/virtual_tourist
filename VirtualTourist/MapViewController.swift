@@ -29,13 +29,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         tap.minimumPressDuration = 0.3
         map.addGestureRecognizer(tap)
         
-        print("start fetch")
         do {
             try fetchedResultsController.performFetch()
+            for pin in fetchedResultsController.fetchedObjects as! [Pin] {
+                map.addAnnotation(pin.annotation)
+            }
         } catch {
             print("fetch \(error)")
         }
-        print("end fetch")
         
         fetchedResultsController.delegate = self
     }
@@ -140,6 +141,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         atIndexPath indexPath: NSIndexPath?,
         forChangeType type: NSFetchedResultsChangeType,
         newIndexPath: NSIndexPath?) {
+            print("on object change")
             guard let pin = anObject as? Pin else {
                 return
             }

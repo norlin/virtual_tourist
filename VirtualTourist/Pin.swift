@@ -30,9 +30,7 @@ class Pin: NSManagedObject {
     }()
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        print("create pin entity")
         super.init(entity: entity, insertIntoManagedObjectContext: context)
-        print("created pin \(self)")
     }
     
     init(dictionary: [String : AnyObject], context: NSManagedObjectContext) {
@@ -43,15 +41,10 @@ class Pin: NSManagedObject {
         lon = dictionary["lon"] as! NSNumber
         photosDir = ""
         
-        print("init note")
         if let note = dictionary["note"] as? [String : AnyObject] {
-                print("init note 1")
             self.note = Note(dictionary: note, context: context)
-                    print("init note 2")
         } else {
-                print("init note 3")
             self.note = Note(dictionary: ["text": ""], context: context)
-                    print("init note 4")
         }
     }
 }
