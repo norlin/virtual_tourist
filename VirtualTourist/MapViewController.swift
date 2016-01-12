@@ -141,7 +141,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         atIndexPath indexPath: NSIndexPath?,
         forChangeType type: NSFetchedResultsChangeType,
         newIndexPath: NSIndexPath?) {
-            print("on object change")
             guard let pin = anObject as? Pin else {
                 return
             }
