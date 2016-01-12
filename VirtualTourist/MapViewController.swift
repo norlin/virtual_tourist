@@ -141,17 +141,30 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         atIndexPath indexPath: NSIndexPath?,
         forChangeType type: NSFetchedResultsChangeType,
         newIndexPath: NSIndexPath?) {
-            guard let pin = anObject as? Pin else {
+            if let pin = anObject as? Pin {
+                switch type {
+                case .Insert:
+                    map.addAnnotation(pin.annotation)
+                    
+                case .Delete:
+                    map.removeAnnotation(pin.annotation)
+                default:
+                    break
+                }
                 return
             }
-            switch type {
-            case .Insert:
-                map.addAnnotation(pin.annotation)
-                
-            case .Delete:
-                map.removeAnnotation(pin.annotation)
-            default:
-                break
+            
+            if let photo = anObject as? Photo {
+                switch type {
+                case .Insert:
+                    print("photo added!")
+                    
+                case .Delete:
+                    PhotosFetcher.Caches.imageCache.storeImage(nil, withIdentifier: photo.imagePath)
+                default:
+                    break
+                }
+                return
             }
     }
     
