@@ -107,31 +107,44 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
     
     // photos methods
     func reloadPhotos(){
-        print("TODO: reloadPhotos")
+        guard pin != nil else {
+            return
+        }
+        for photo in pin!.photos {
+            self.sharedContext.deleteObject(photo)
+        }
+        pin!.fetchPhotos(){
+            CoreDataStackManager.sharedInstance().saveContext()
+            dispatch_async(dispatch_get_main_queue()){
+                self.photosView.reloadData()
+            }
+        }
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if (section == 0 && pin != nil) {
-            return pin!.photos.count
-        }
+        let sectionInfo = self.fetchedResultsController.sections![section] 
+        let count = sectionInfo.numberOfObjects
         
-        return 0
+        return count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let CellIdentifier = "PhotoCell"
-            
-        let photos = pin!.photos
-        let photo = photos[indexPath.row]
+        let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        let cell = photosView.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: indexPath) as! PhotoCellView
+        let cell = photosView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCellView
         
         if let image = photo.image {
             cell.image.image = image
+            cell.loader.hidden = true
         } else {
+            cell.image.image = UIImage(named: "Placeholder")
+            cell.loader.hidden = false
+            cell.loader.startAnimating()
             photo.fetchImage(){
                 dispatch_async(dispatch_get_main_queue()){
                     cell.image.image = photo.image
+                    cell.loader.stopAnimating()
+                    cell.loader.hidden = true
                 }
             }
         }
@@ -147,6 +160,9 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
     lazy var fetchedResultsController: NSFetchedResultsController = {
         let fetchRequest = NSFetchRequest(entityName: "Photo")
         
+        if let pin = self.pin {
+            fetchRequest.predicate = NSPredicate(format: "pin == %@", pin)
+        }
         fetchRequest.sortDescriptors = []
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -156,4 +172,27 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
         
         return fetchedResultsController
     }()
+    
+    func controller(controller: NSFetchedResultsController,
+        didChangeObject anObject: AnyObject,
+        atIndexPath indexPath: NSIndexPath?,
+        forChangeType type: NSFetchedResultsChangeType,
+        newIndexPath: NSIndexPath?) {
+        
+            if let photo = anObject as? Photo {
+                switch type {
+                case .Insert:
+                    //if (photo.image == nil){
+                    //    photo.fetchImage(){}
+                    //}
+                    break
+                case .Delete:
+                    PhotosFetcher.Caches.imageCache.storeImage(nil, withIdentifier: photo.imagePath)
+                default:
+                    break
+                }
+                return
+            }
+    }
+
 }

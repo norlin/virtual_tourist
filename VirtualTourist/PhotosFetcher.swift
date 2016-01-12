@@ -15,10 +15,13 @@ class PhotosFetcher {
     //let API_KEY = "YOUR_500px_API_WITHOUT_FU*CKING_YAHOO"
     let API_KEY = "ECsA8TFIv9Uij3hULAV4M6nLVYmtHYMSAqgaDDGA"
     
-    func searchPhotos(lat: Double, lon: Double, completionHandler: (err: String?, photos: [Photo]?) -> Void){
-        var methodArguments = [
+    func searchPhotos(lat: Double, lon: Double, pagesCount: Int, completionHandler: (err: String?, photos: [Photo]?, pagesCount: Int) -> Void){
+        let page = Int(arc4random_uniform(UInt32(pagesCount)))+1
+        let methodArguments = [
             "consumer_key": API_KEY,
             "rpp": "9",
+            "sort": "times_viewed",
+            "page": "\(page)",
             "geo": "\(lat),\(lon),\(50)km"
         ]
         
@@ -27,38 +30,39 @@ class PhotosFetcher {
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
 
-        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
-            if let error = downloadError {
-                self.updateStatus("Could not complete the request")
-                completionHandler(err: "Could not complete the request \(error)", photos: nil)
-            } else {
-                
-                guard let data = data else {
-                    self.updateStatus("No data fetched!")
-                    completionHandler(err: "No data fetched!", photos: nil)
-                    return
-                }
-                let parsedResult: NSDictionary = (try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
-                if let resultsArray = parsedResult.valueForKey("photos") as? [[String: AnyObject]] {
-                    var photos = [Photo]()
-                    for item in resultsArray {
-                        do {
-                            let photo = try Photo(dictionary: item, context: self.sharedContext)
-                            photos.append(photo)
-                        } catch {
-                            print("Can't parse photo: \(item)")
-                        }
-                    }
-                    completionHandler(err: nil, photos: photos)
+        let backgroundQueue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
+        dispatch_async(backgroundQueue) {
+            let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+                if let error = downloadError {
+                    self.updateStatus("Could not complete the request")
+                    completionHandler(err: "Could not complete the request \(error)", photos: nil, pagesCount: 1)
                 } else {
-                    self.updateStatus("JSON response error!")
-                    completionHandler(err: "Cant find key 'photos' in \(parsedResult)", photos: nil)
+                    
+                    guard let data = data else {
+                        self.updateStatus("No data fetched!")
+                        completionHandler(err: "No data fetched!", photos: nil, pagesCount: 1)
+                        return
+                    }
+                    let parsedResult: NSDictionary = (try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
+                    if let resultsArray = parsedResult.valueForKey("photos") as? [[String: AnyObject]] {
+                        var photos = [Photo]()
+                        for item in resultsArray {
+                            let photo = Photo(dictionary: item, context: self.sharedContext)
+                            photos.append(photo)
+                        }
+                        var pagesCount = 1
+                        if let count = parsedResult.valueForKey("total_pages") as? Int {
+                            pagesCount = count
+                        }
+                        completionHandler(err: nil, photos: photos, pagesCount: pagesCount)
+                    } else {
+                        self.updateStatus("JSON response error!")
+                        completionHandler(err: "Cant find key 'photos' in \(parsedResult)", photos: nil, pagesCount: 1)
+                    }
                 }
             }
+            task.resume()
         }
-        
-        /* 9 - Resume (execute) the task */
-        task.resume()
     }
     
     func updateStatus(text: String){

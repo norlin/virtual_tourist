@@ -96,7 +96,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
             clearNewPin()
         case .Ended:
             clearNewPin()
-            let _ = Pin(dictionary: ["lat": coordinate.latitude, "lon": coordinate.longitude], context: sharedContext)
+            let pin = Pin(dictionary: ["lat": coordinate.latitude, "lon": coordinate.longitude], context: sharedContext)
+            pin.fetchPhotos(){
+                CoreDataStackManager.sharedInstance().saveContext()
+            }
             CoreDataStackManager.sharedInstance().saveContext()
         default:
             break
@@ -148,19 +151,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
                     
                 case .Delete:
                     map.removeAnnotation(pin.annotation)
-                default:
-                    break
-                }
-                return
-            }
-            
-            if let photo = anObject as? Photo {
-                switch type {
-                case .Insert:
-                    print("photo added!")
-                    
-                case .Delete:
-                    PhotosFetcher.Caches.imageCache.storeImage(nil, withIdentifier: photo.imagePath)
                 default:
                     break
                 }

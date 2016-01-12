@@ -14,7 +14,7 @@
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lat" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lon" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="photosDir" attributeType="String" syncable="YES"/>
+        <attribute name="pagesCount" attributeType="Integer 64" defaultValueString="1" syncable="YES"/>
         <relationship name="note" maxCount="1" deletionRule="Cascade" destinationEntity="Note" inverseName="pin" inverseEntity="Note" syncable="YES"/>
         <relationship name="photos" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Photo" inverseName="pin" inverseEntity="Photo" syncable="YES"/>
     </entity>
