@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Automatic">
-    <entity name="Note" syncable="YES">
-        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="pin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Pin" inverseName="note" inverseEntity="Pin" syncable="YES"/>
+    <entity name="Note" representedClassName="Note" syncable="YES">
+        <attribute name="text" attributeType="String" syncable="YES"/>
+        <relationship name="pin" maxCount="1" deletionRule="Nullify" destinationEntity="Pin" inverseName="note" inverseEntity="Pin" syncable="YES"/>
     </entity>
     <entity name="Photo" syncable="YES">
         <relationship name="pin" maxCount="1" deletionRule="Nullify" destinationEntity="Pin" inverseName="photos" inverseEntity="Pin" syncable="YES"/>
     </entity>
-    <entity name="Pin" syncable="YES">
-        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="lon" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="pin" inverseEntity="Note" syncable="YES"/>
-        <relationship name="photos" toMany="YES" deletionRule="Nullify" destinationEntity="Photo" inverseName="pin" inverseEntity="Photo" syncable="YES"/>
+    <entity name="Pin" representedClassName="Pin" syncable="YES">
+        <attribute name="lat" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lon" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="photosDir" attributeType="String" syncable="YES"/>
+        <relationship name="note" maxCount="1" deletionRule="Cascade" destinationEntity="Note" inverseName="pin" inverseEntity="Note" syncable="YES"/>
+        <relationship name="photos" toMany="YES" deletionRule="Cascade" destinationEntity="Photo" inverseName="pin" inverseEntity="Photo" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Pin" positionX="-63" positionY="-18" width="128" height="120"/>
-        <element name="Photo" positionX="-54" positionY="18" width="128" height="60"/>
         <element name="Note" positionX="-36" positionY="36" width="128" height="75"/>
+        <element name="Photo" positionX="-54" positionY="18" width="128" height="60"/>
+        <element name="Pin" positionX="-63" positionY="-18" width="128" height="120"/>
     </elements>
 </model>

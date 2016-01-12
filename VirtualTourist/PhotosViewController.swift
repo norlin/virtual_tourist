@@ -45,7 +45,7 @@ class PhotosViewController: UIViewController, UITextViewDelegate {
     }
     
     func showPinDetails(pin: Pin) {
-        notes.text = pin.notes
+        notes.text = pin.note.text
         placeholder.hidden = notes.hasText()
     }
 
@@ -66,7 +66,12 @@ class PhotosViewController: UIViewController, UITextViewDelegate {
     func saveEditing(textField: UITextField) {
         view.endEditing(true)
         navigationItem.rightBarButtonItem = reloadButton
-        pin?.notes = notes.text
+        guard pin != nil else {
+            return
+        }
+        
+        pin!.note.text = notes.text
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     // photos methods
