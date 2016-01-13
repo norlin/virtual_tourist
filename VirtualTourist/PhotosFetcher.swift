@@ -12,7 +12,7 @@ import CoreData
 class PhotosFetcher {
     let BASE_URL = "https://api.500px.com/v1"
     let METHOD_NAME = "/photos/search"
-    let API_KEY = "YOUR_500px_API_WITHOUT_FU*CKING_YAHOO_SORRY"
+    let API_KEY = "YOUR_500px_API_KEY_WITHOUT_FU*CKING_YAHOO_SORRY"
     
     func searchPhotos(lat: Double, lon: Double, pagesCount: Int, completionHandler: (err: String?, photos: [Photo]?, pagesCount: Int) -> Void){
         let page = Int(arc4random_uniform(UInt32(pagesCount)))+1
