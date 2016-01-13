@@ -64,7 +64,6 @@ class Pin: NSManagedObject {
             for photo in photos! {
                 photo.pin = self
             }
-            print("photos ready!")
             completionHandler()
         }
     }
