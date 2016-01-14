@@ -12,7 +12,7 @@ import CoreData
 class PhotosFetcher {
     let BASE_URL = "https://api.500px.com/v1"
     let METHOD_NAME = "/photos/search"
-    let API_KEY = "YOUR_500px_API_KEY_WITHOUT_FU*CKING_YAHOO_SORRY"
+    let API_KEY = "ECsA8TFIv9Uij3hULAV4M6nLVYmtHYMSAqgaDDGA"
     
     func searchPhotos(lat: Double, lon: Double, pagesCount: Int, completionHandler: (err: String?, photos: [Photo]?, pagesCount: Int) -> Void){
         let page = Int(arc4random_uniform(UInt32(pagesCount)))+1
@@ -45,15 +45,17 @@ class PhotosFetcher {
                     let parsedResult: NSDictionary = (try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
                     if let resultsArray = parsedResult.valueForKey("photos") as? [[String: AnyObject]] {
                         var photos = [Photo]()
-                        for item in resultsArray {
-                            let photo = Photo(dictionary: item, context: self.sharedContext)
-                            photos.append(photo)
+                        self.sharedContext.performBlockAndWait {
+                            for item in resultsArray {
+                                let photo = Photo(dictionary: item, context: self.sharedContext)
+                                photos.append(photo)
+                            }
+                            var pagesCount = 1
+                            if let count = parsedResult.valueForKey("total_pages") as? Int {
+                                pagesCount = count
+                            }
+                            completionHandler(err: nil, photos: photos, pagesCount: pagesCount)
                         }
-                        var pagesCount = 1
-                        if let count = parsedResult.valueForKey("total_pages") as? Int {
-                            pagesCount = count
-                        }
-                        completionHandler(err: nil, photos: photos, pagesCount: pagesCount)
                     } else {
                         self.updateStatus("JSON response error!")
                         completionHandler(err: "Cant find key 'photos' in \(parsedResult)", photos: nil, pagesCount: 1)

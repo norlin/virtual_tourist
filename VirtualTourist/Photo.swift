@@ -32,13 +32,15 @@ class Photo: NSManagedObject {
     func fetchImage(completionHandler: (() -> Void)){
         let backgroundQueue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
         dispatch_async(backgroundQueue) {
-            let imageURL = NSURL(string: self.url)
-            if let imageData = NSData(contentsOfURL: imageURL!) {
-                self.image = UIImage(data: imageData)
-            } else {
-                print("can't load image!")
+            self.sharedContext.performBlockAndWait {
+                let imageURL = NSURL(string: self.url)
+                if let imageData = NSData(contentsOfURL: imageURL!) {
+                    self.image = UIImage(data: imageData)
+                } else {
+                    print("can't load image!")
+                }
+                completionHandler()
             }
-            completionHandler()
         }
     }
     
@@ -50,5 +52,9 @@ class Photo: NSManagedObject {
         set {
             PhotosFetcher.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath)
         }
+    }
+    
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
     }
 }

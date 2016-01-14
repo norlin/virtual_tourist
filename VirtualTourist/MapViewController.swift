@@ -29,13 +29,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         tap.minimumPressDuration = 0.3
         map.addGestureRecognizer(tap)
         
-        do {
-            try fetchedResultsController.performFetch()
-            for pin in fetchedResultsController.fetchedObjects as! [Pin] {
-                map.addAnnotation(pin.annotation)
+        sharedContext.performBlockAndWait {
+            do {
+                try self.fetchedResultsController.performFetch()
+                for pin in self.fetchedResultsController.fetchedObjects as! [Pin] {
+                    self.map.addAnnotation(pin.annotation)
+                }
+            } catch {
+                print("fetch \(error)")
             }
-        } catch {
-            print("fetch \(error)")
         }
         
         fetchedResultsController.delegate = self
@@ -96,11 +98,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
             clearNewPin()
         case .Ended:
             clearNewPin()
-            let pin = Pin(dictionary: ["lat": coordinate.latitude, "lon": coordinate.longitude], context: sharedContext)
-            pin.fetchPhotos(){
+            self.sharedContext.performBlockAndWait {
+                let pin = Pin(dictionary: ["lat": coordinate.latitude, "lon": coordinate.longitude], context: self.sharedContext)
+                pin.fetchPhotos(){
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
                 CoreDataStackManager.sharedInstance().saveContext()
             }
-            CoreDataStackManager.sharedInstance().saveContext()
         default:
             break
         }
@@ -111,8 +115,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         if let annotation = view.annotation as? PinAnnotation {
             if (editMode) {
                 let pin = annotation.pin
-                sharedContext.deleteObject(pin)
-                CoreDataStackManager.sharedInstance().saveContext()
+                self.sharedContext.performBlockAndWait {
+                    self.sharedContext.deleteObject(pin)
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
             } else {
                 performSegueWithIdentifier("pinDetails", sender: annotation.pin)
             }

@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, NSFetchedResultsControllerDelegate {
+class PhotosViewController: UIViewController {
 
     @IBOutlet weak var placeholder: UILabel!
     @IBOutlet weak var notes: UITextView!
@@ -60,10 +60,12 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
             return
         }
         
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {}
-        showPinDetails(pin!)
+        self.sharedContext.performBlockAndWait {
+            do {
+                try self.fetchedResultsController.performFetch()
+            } catch {}
+            self.showPinDetails(self.pin!)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,13 +80,15 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
         if (pin.photos.count == 0) {
             loadintHint.hidden = false
             noPhotosHint.hidden = true
-            pin.fetchPhotos(){
-                CoreDataStackManager.sharedInstance().saveContext()
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.photosView.reloadData()
-                    self.noPhotosHint.hidden = true
-                    self.loadintHint.hidden = true
-                    self.photosView.hidden = false
+            self.sharedContext.performBlockAndWait {
+                pin.fetchPhotos(){
+                    CoreDataStackManager.sharedInstance().saveContext()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.photosView.reloadData()
+                        self.noPhotosHint.hidden = true
+                        self.loadintHint.hidden = true
+                        self.photosView.hidden = false
+                    }
                 }
             }
         } else {
@@ -95,118 +99,45 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
         }
     }
 
-    // notes methods
-    func textViewDidEndEditing(textView: UITextView) {
-        placeholder.hidden = textView.hasText()
-    }
-    
-    func textViewDidChange(textView: UITextView) {
-        placeholder.hidden = textView.hasText()
-    }
-    
-    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
-        navigationItem.rightBarButtonItem = cancelButton
-        return true
-    }
-    
-    func saveEditing(textField: UITextField) {
-        view.endEditing(true)
-        navigationItem.rightBarButtonItem = reloadButton
-        guard pin != nil else {
-            return
-        }
-        
-        pin!.note.text = notes.text
-        CoreDataStackManager.sharedInstance().saveContext()
-    }
-    
     // photos methods
     func reloadPhotos(){
         guard pin != nil else {
             return
         }
-        for photo in pin!.photos {
-            self.sharedContext.deleteObject(photo)
+        self.sharedContext.performBlockAndWait {
+            for photo in self.pin!.photos {
+                self.sharedContext.deleteObject(photo)
+            }
         }
         loadintHint.hidden = false
-        pin!.fetchPhotos(){
-            dispatch_async(dispatch_get_main_queue()){
-                self.loadintHint.hidden = true
-            }
-            CoreDataStackManager.sharedInstance().saveContext()
-        }
-    }
-    
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let sectionInfo = self.fetchedResultsController.sections![section] 
-        let count = sectionInfo.numberOfObjects
-        
-        return count
-    }
-    
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-        
-        let cell = photosView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCellView
-        
-        if let image = photo.image {
-            cell.image.image = image
-            cell.loader.hidden = true
-        } else {
-            cell.image.image = UIImage(named: "Placeholder")
-            cell.loader.hidden = false
-            cell.loader.startAnimating()
-            photo.fetchImage(){
+        self.sharedContext.performBlockAndWait {
+            self.pin!.fetchPhotos(){
                 dispatch_async(dispatch_get_main_queue()){
-                    cell.image.image = photo.image
-                    cell.loader.stopAnimating()
-                    cell.loader.hidden = true
+                    self.loadintHint.hidden = true
                 }
+                CoreDataStackManager.sharedInstance().saveContext()
             }
-        }
-        
-        return cell
-    }
-    
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    
-        if let index = selectedItems.indexOf(indexPath) {
-            selectedItems.removeAtIndex(index)
-            let cell = photosView.cellForItemAtIndexPath(indexPath) as! PhotoCellView
-            cell.image.alpha = 1
-        } else {
-            selectedItems.append(indexPath)
-            let cell = photosView.cellForItemAtIndexPath(indexPath) as! PhotoCellView
-            cell.image.alpha = 0.6
-        }
-        
-        if (selectedItems.count > 0) {
-            deleteLabel.hidden = false
-        } else {
-            deleteLabel.hidden = true
         }
     }
     
     func deletePhotos(gestureRecognizer: UIGestureRecognizer) {
         switch gestureRecognizer.state {
         case .Ended:
-            if selectedItems.count > 0 {
-                for item in selectedItems {
-                    let photo = fetchedResultsController.objectAtIndexPath(item) as! NSManagedObject
-                    sharedContext.deleteObject(photo)
+            self.sharedContext.performBlockAndWait {
+                if self.selectedItems.count > 0 {
+                    for item in self.selectedItems {
+                        let photo = self.fetchedResultsController.objectAtIndexPath(item) as! NSManagedObject
+                        self.sharedContext.deleteObject(photo)
+                    }
+                    CoreDataStackManager.sharedInstance().saveContext()
                 }
-                CoreDataStackManager.sharedInstance().saveContext()
             }
         default:
             break
         }
     }
     
-    // core data methods
-    var sharedContext: NSManagedObjectContext {
-        return CoreDataStackManager.sharedInstance().managedObjectContext
-    }
-    
+        
     lazy var fetchedResultsController: NSFetchedResultsController = {
         let fetchRequest = NSFetchRequest(entityName: "Photo")
         
@@ -222,55 +153,5 @@ class PhotosViewController: UIViewController, UITextViewDelegate, UICollectionVi
         
         return fetchedResultsController
     }()
-    
-    func controller(controller: NSFetchedResultsController,
-        didChangeObject anObject: AnyObject,
-        atIndexPath indexPath: NSIndexPath?,
-        forChangeType type: NSFetchedResultsChangeType,
-        newIndexPath: NSIndexPath?) {
-        
-            if let photo = anObject as? Photo {
-                switch type {
-                case .Insert:
-                    insertedItems.append(newIndexPath!)
-                    break
-                case .Delete:
-                    deletedItems.append(indexPath!)
-                    PhotosFetcher.Caches.imageCache.storeImage(nil, withIdentifier: photo.imagePath)
-                default:
-                    break
-                }
-                return
-            }
-    }
-    
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        photosView.performBatchUpdates({
-            if (self.deletedItems.count > 0) {
-                self.photosView.deleteItemsAtIndexPaths(self.deletedItems)
-                self.deletedItems.removeAll()
-                dispatch_async(dispatch_get_main_queue()){
-                    self.deleteLabel.hidden = true
-                }
-            }
-            
-            if (self.insertedItems.count > 0) {
-                self.photosView.insertItemsAtIndexPaths(self.insertedItems)
-                self.insertedItems.removeAll()
-            }
-            
-            if (self.fetchedResultsController.fetchedObjects?.count > 0) {
-                dispatch_async(dispatch_get_main_queue()){
-                    self.noPhotosHint.hidden = true
-                }
-            } else if self.loadintHint.hidden {
-                dispatch_async(dispatch_get_main_queue()){
-                    self.noPhotosHint.hidden = false
-                }
-            }
-        }){done in}
-        
-        
-    }
 
 }

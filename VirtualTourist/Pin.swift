@@ -64,7 +64,12 @@ class Pin: NSManagedObject {
             for photo in photos! {
                 photo.pin = self
             }
+            
             completionHandler()
         }
+    }
+    
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
     }
 }
