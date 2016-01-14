@@ -44,6 +44,10 @@ class Photo: NSManagedObject {
         }
     }
     
+    override func prepareForDeletion() {
+        self.image = nil
+    }
+    
     var image: UIImage? {
         get {
             return PhotosFetcher.Caches.imageCache.imageWithIdentifier(imagePath)

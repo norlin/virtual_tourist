@@ -21,14 +21,12 @@ extension PhotosViewController: NSFetchedResultsControllerDelegate {
         forChangeType type: NSFetchedResultsChangeType,
         newIndexPath: NSIndexPath?) {
         
-            if let photo = anObject as? Photo {
+            if let _ = anObject as? Photo {
                 switch type {
                 case .Insert:
                     insertedItems.append(newIndexPath!)
-                    break
                 case .Delete:
                     deletedItems.append(indexPath!)
-                    PhotosFetcher.Caches.imageCache.storeImage(nil, withIdentifier: photo.imagePath)
                 default:
                     break
                 }
